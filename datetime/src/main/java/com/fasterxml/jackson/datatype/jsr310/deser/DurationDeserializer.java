@@ -52,7 +52,9 @@ public class DurationDeserializer extends JSR310DeserializerBase<Duration>
         {
             case JsonTokenId.ID_NUMBER_FLOAT:
                 BigDecimal value = parser.getDecimalValue();
-                return DecimalUtils.extractSecondsAndNanos(value, Duration::ofSeconds);
+                long seconds = value.longValue();
+                int nanoseconds = DecimalUtils.extractNanosecondDecimal(value, seconds);
+                return Duration.ofSeconds(seconds, nanoseconds);
 
             case JsonTokenId.ID_NUMBER_INT:
                 if(context.isEnabled(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS)) {
